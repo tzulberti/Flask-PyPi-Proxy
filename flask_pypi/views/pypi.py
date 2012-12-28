@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*-
 
+''' Handles the submition of the different packages.
+
+This is used on **register** o **upload**.
+
+For example:
+
+.. code-block:: bash
+
+    python setup.py register
+    python setup.py sdist upload
+
+
 '''
-'''
+
 from os import makedirs
 from os.path import exists, join
+
 from flask import request
 from werkzeug import secure_filename
 

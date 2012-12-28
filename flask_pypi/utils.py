@@ -5,6 +5,13 @@ from os.path import join
 from hashlib import md5
 
 
+def is_private(egg_name):
+    ''' Checks if the egg_name is private or if belongs to one of
+    the eggs that are uploaded to the normal pypi.
+    '''
+    return egg_name in app.config.get('PRIVATE_EGGS', [])
+
+
 def get_base_path():
     ''' Gets the base path where all the eggs are on this servers
     '''
