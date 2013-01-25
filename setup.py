@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='Flask pypi',
+    name='Flask-Pypi-Proxy',
     version='0.0.1',
     description='asd',
     long_description=open('README.rst').read(-1),

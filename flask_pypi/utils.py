@@ -8,14 +8,18 @@ from hashlib import md5
 def is_private(egg_name):
     ''' Checks if the egg_name is private or if belongs to one of
     the eggs that are uploaded to the normal pypi.
+
+    :param str egg_name: the name of the egg without the version information.
+
+    :return: true if the egg is private.
     '''
-    return egg_name in app.config.get('PRIVATE_EGGS', [])
+    return egg_name in app.config['PRIVATE_EGGS']
 
 
 def get_base_path():
     ''' Gets the base path where all the eggs are on this servers
     '''
-    return app.config.get('BASE_FOLDER_PATH', '/tmp/pepe')
+    return app.config['BASE_FOLDER_PATH']
 
 
 def get_package_path(egg_name):
@@ -28,12 +32,6 @@ def get_package_path(egg_name):
              system.
     '''
     return join(get_base_path(), egg_name)
-
-
-def get_url_for_package(egg_name):
-    '''
-    '''
-    return '../../packages/sources/%s/%s/%s'
 
 
 def get_md5_for_content(package_content):

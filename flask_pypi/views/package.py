@@ -21,8 +21,18 @@ from requests import get, head
 @app.route('/packages/source/<source_letter>/<package_name>/<package_file>',
            methods=['GET', 'HEAD'])
 def package(source_letter, package_name, package_file):
+    ''' Downloads the egg
+
+    :param str source_letter: the first char of the package name. For example:
+                              D
+    :param str package_name: the name of the package. For example: Django
+    :param str package_file: the name of the package and it's version. For
+                             example: Django==1.5.0
+    '''
     egg_filename = join(get_base_path(), package_name, package_file)
     if request.method == 'HEAD':
+        # in this case the content type of the file is what is
+        # required
         if not exists(egg_filename):
             url = 'http://pypi.python.org/packages/source/%s/%s/%s' % (
                         source_letter, package_name, package_file)
@@ -34,7 +44,7 @@ def package(source_letter, package_name, package_file):
             return _respond('', mimetype)
 
     if exists(egg_filename):
-        # entonces tengo que leer el contenido del archivo y pasarselo
+        # if the file exists, then use the local file.
         path = get_package_path(package_name)
         path = join(path, package_file)
         with open(path, 'rb') as egg:
@@ -43,10 +53,11 @@ def package(source_letter, package_name, package_file):
         return _respond(content, mimetype)
 
     else:
-        # TODO: aca tengo ciertos problemas si bajo el paquete a mano.
-        # tengo que usar pip porque con ciertos paquetes no tengo ni
-        # idea de como es que realmente los baja
-        # por ejemplo: py-bcrypt
+        # Downloads the egg from pypi and saves it locally, then
+        # it will return it.
+
+        # TODO: there are some problem here with some packages. For
+        #       example: py-bcrypt
         package_path = get_package_path(package_name)
         pypi_response = get('http://pypi.python.org/packages/source/%s/%s/%s' % (
                                 source_letter, package_name, package_file
@@ -60,15 +71,6 @@ def package(source_letter, package_name, package_file):
 
         with open(egg_filename, 'w') as egg_file:
             egg_file.write(pypi_response.content)
-
-        #
-        # print ' '.join(['pip', 'install', '-d', package_path, package_file])
-        # pip_process = Popen(['pip', 'install', '-d', package_path, package_file])
-        # pip_process.wait()
-
-        # if pip_process.returncode != 0:
-        #     # todo aca se deberia borrar la carpeta creada anteriormente
-        #     pass
 
         with open(egg_filename) as egg_file:
             filecontent = egg_file.read(-1)
