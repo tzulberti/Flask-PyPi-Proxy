@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask_pypi.app import app
+from flask_pypi_proxy.app import app
 from os.path import join
 from hashlib import md5
 

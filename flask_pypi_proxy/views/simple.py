@@ -13,8 +13,8 @@ from flask import abort, render_template
 from pyquery import PyQuery
 from requests import get
 
-from flask_pypi.app import app
-from flask_pypi.utils import get_package_path, get_base_path, is_private
+from flask_pypi_proxy.app import app
+from flask_pypi_proxy.utils import get_package_path, get_base_path, is_private
 
 
 VersionData = namedtuple('VersionData', ['name', 'md5'])

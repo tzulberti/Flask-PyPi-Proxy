@@ -20,8 +20,8 @@ from os.path import exists, join
 from flask import request
 from werkzeug import secure_filename
 
-from flask_pypi.utils import get_package_path
-from flask_pypi.app import app
+from flask_pypi_proxy.utils import get_package_path
+from flask_pypi_proxy.app import app
 
 
 @app.route('/pypi/', methods=['POST'])

@@ -9,9 +9,9 @@ the version of the package to download.
 
 import magic
 from flask import make_response, request, abort
-from flask_pypi.app import app
-from flask_pypi.utils import (get_base_path, get_package_path,
-                              get_md5_for_content)
+from flask_pypi_proxy.app import app
+from flask_pypi_proxy.utils import (get_base_path, get_package_path,
+                                    get_md5_for_content)
 from os import makedirs
 from os.path import join, exists
 from requests import get, head
