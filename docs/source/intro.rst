@@ -10,7 +10,7 @@ Advantajes
 
 * Once that the package is downloaded from Pypi, then it won't be downloaded
   again. Bacause of this, the package instalation is quicker.
-  Lets think that you have some servers where your application run. 
+  Lets think that you have some servers where your application run.
   You configure one of this servers with Flask-Pypi-Proxy, and because of that
   all the servers download the required python packages from an internal server.
 
@@ -30,3 +30,4 @@ Disadvantajes
   and then from the Flask-Pypi-Proxy
 
 * There are some packages that fails to install them. For example: py-bcrypt.
+  Basically, all the external packages that aren't hosted at pypi.python.org.
