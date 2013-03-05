@@ -5,5 +5,6 @@
     <body>
         {% for package_name in packages %}
             <a href="{{ url_for('simple_package', package_name=package_name) }}">{{ package_name }}</a>
+            <br>
         {% endfor %}
     </body>
