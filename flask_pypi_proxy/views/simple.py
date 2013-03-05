@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-'''Gets the list of the packages that can be downloaded.
-
+''' Gets the list of the packages that can be downloaded.
 '''
 
 from collections import namedtuple
@@ -61,9 +60,13 @@ def simple_package(package_name):
 
     :return: a template with all the links to download the packages.
     '''
-
+    app.logger.debug('Requesting index for: %s', package_name)
     package_folder = get_package_path(package_name)
-    if is_private(package_name) and exists(package_folder):
+    if (is_private(package_name) or (
+            exists(package_name) and app.config['SHOULD_USE_EXISTING'])):
+
+        app.logger.debug('Found information of package: %s in local repository',
+                         package_name)
         package_versions = []
         template_data = dict(
             source_letter=package_name[0],
@@ -87,9 +90,14 @@ def simple_package(package_name):
 
         return render_template('simple_package.html', **template_data)
     else:
-        url = 'http://pypi.python.org/simple/%s' % package_name
+        app.logger.debug('Didnt found package: %s in local repository. '
+                         'Using proxy.', package_name)
+        url = app.config['PYPI_URL'] + 'simple/%s' % package_name
         response = get(url)
         if response.status_code != 200:
+            app.logger.warning('Error while getting proxy info for: %s'
+                               'Errors details: %s', package_name,
+                               response.text)
             abort(response.status_code)
 
         content = response.content
