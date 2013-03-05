@@ -34,8 +34,10 @@ def package(source_letter, package_name, package_file):
         # in this case the content type of the file is what is
         # required
         if not exists(egg_filename):
-            url = 'http://pypi.python.org/packages/source/%s/%s/%s' % (
-                        source_letter, package_name, package_file)
+            url = app.config['PYPI_URL'] + 'packages/source/%s/%s/%s' % (
+                                        source_letter,
+                                        package_name,
+                                        package_file)
             pypi_response = head(url)
             return _respond(pypi_response.content, pypi_response.headers['content-type'])
 
@@ -43,7 +45,9 @@ def package(source_letter, package_name, package_file):
             mimetype = magic.from_file(egg_filename, mime=True)
             return _respond('', mimetype)
 
+    app.logger.debug('Downloading: %s', package_file)
     if exists(egg_filename):
+        app.logger.debug('Found local file in repository for: %s', package_file)
         # if the file exists, then use the local file.
         path = get_package_path(package_name)
         path = join(path, package_file)
@@ -58,12 +62,21 @@ def package(source_letter, package_name, package_file):
 
         # TODO: there are some problem here with some packages. For
         #       example: py-bcrypt
+
         package_path = get_package_path(package_name)
-        pypi_response = get('http://pypi.python.org/packages/source/%s/%s/%s' % (
-                                source_letter, package_name, package_file
-                           ))
+        url = app.config['PYPI_URL'] + 'packages/source/%s/%s/%s' % (
+                                        source_letter,
+                                        package_name,
+                                        package_file)
+        app.logger.debug('Starting to download: %s using the url: %s',
+                         package_file, url)
+        pypi_response = get(url)
+        app.logger.debug('Finished downloading package: %s', package_file)
 
         if pypi_response.status_code != 200:
+            app.logger.warning('Error respose while downloading for proxy: %s'
+                               'Response details: %s', package_file,
+                               pypi_response.text)
             abort(pypi_response.status_code)
 
         if not exists(package_path):
