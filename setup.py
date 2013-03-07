@@ -3,13 +3,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='Flask-Pypi-Proxy',
-    version='0.0.1',
-    description='asd',
+    version='0.0.2',
+    description='A Pypi proxy',
     long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',
     author_email='tzulberti@gmail.com',
     license='BSD',
-    url='https://github.com/tzulberti/unittest2-utils',
+    url='https://github.com/tzulberti/Flask-PyPi-Proxy',
     install_requires=[
         "Flask",
         "requests",

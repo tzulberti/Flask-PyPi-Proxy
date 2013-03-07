@@ -15,6 +15,12 @@ To use it after the right configuration, you can use it by doing:
 
     pip install -i http://mypypiserver.com/simple/ <PACKAGE>
 
+
+More documentation could be found here:
+`https://flask-pypi-proxy.readthedocs.org/en/latest/index.html
+<https://flask-pypi-proxy.readthedocs.org/en/latest/index.html>_`
+
+
 Advantajes
 ==========
 
