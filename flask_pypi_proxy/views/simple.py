@@ -105,21 +105,20 @@ def simple_package(package_name):
         for anchor in p("a"):
             panchor = PyQuery(anchor)
             href = panchor.attr("href")
-            if not href.startswith('../../packages/source'):
+            # robin-jarry: modified the href to ../../packages/
+            # so that it works also for non-source packages (.egg, .exe and .msi)
+            if not href.startswith('../../packages/'):
                 # then the link is to an external server.
                 # I will change it so it references the local server
                 # and this proxy has the values from that server.
-
                 # For example:
                 #   view-source:http://pypi.python.org/simple/nose/
                 # the lastest versions references somethingaboutrange.com
                 # and because of that PIP won't use this proxy
-                package_version = split(href)[-1]
-                corrected_href = '../../packages/source/%s/%s/%s' % (
-                        package_name[0],
-                        package_name,
-                        package_version
-                )
-                panchor.attr("href", corrected_href)
+                
+                # robin-jarry: if the URL does not start with ../../packages/ 
+                # it should be removed for now. Until we find a way to deal 
+                # with proxying other servers than pypi.python.org.
+                panchor.remove()
         content = p.outerHtml()
         return content
