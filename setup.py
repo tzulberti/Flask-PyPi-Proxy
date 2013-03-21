@@ -1,9 +1,10 @@
-from setuptools import setup, find_packages
+#!/bin/env python
 
+from setuptools import setup, find_packages
 
 setup(
     name='Flask-Pypi-Proxy',
-    version='0.0.3',
+    version='0.0.4.dev',
     description='A Pypi proxy',
     long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',

@@ -91,11 +91,9 @@ def configure_logging(app):
     :param app: the application that will be used to register the URLs.
     '''
     if not app.debug:
-        file_logger = logging.FileHandler(app.config['LOGGING_PATH'])
-        logging_level = getattr(logging, app.config['LOGGING_LEVEL'])
-        file_logger.setLevel(logging_level)
-        app.logger.setLevel(logging_level)
-        app.logger.addHandler(file_logger)
+        logging.basicConfig(filename=app.config['LOGGING_PATH'],
+                            level=getattr(logging, app.config['LOGGING_LEVEL']),
+                            format='%(asctime)s [%(levelname)s] %(message)s')
 
 read_configuration(app)
 configure_logging(app)
