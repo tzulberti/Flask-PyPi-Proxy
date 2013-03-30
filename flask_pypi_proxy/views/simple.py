@@ -125,7 +125,7 @@ def simple_package(package_name):
                         else:
                             # href points to an external page where we will find 
                             # links to package files
-                            external_links.update(find_external_links(app, href))
+                            external_links.update(find_external_links(href))
                     # what ever happens, we remove the link for now
                     # we'll add the external_links after that we found after
                     panchor.remove()                    
@@ -146,25 +146,31 @@ def simple_package(package_name):
         return content
 
 
-def find_external_links(app, url):
+def find_external_links(url):
     '''Look for links to files in a web page and returns a set.
     '''
     links = set()
-    response = get(url)
-    if response.status_code != 200:
-        app.logger.warning('Error while getting proxy info for: %s'
-                           'Errors details: %s', url,
-                           response.text)
-    else:
-        if response.content:
-            p = PyQuery(response.content)
-            for anchor in p("a"):
-                panchor = PyQuery(anchor)
-                href = panchor.attr("href")
-                if url_is_egg_file(href):
-                    # href points to a filename
-                    href = get_absolute_url(href, url)
-                    links.add('<a href="%s">%s</a>' % (href, panchor.text()))
+    try:
+        response = get(url)
+        if response.status_code != 200:
+            app.logger.warning('Error while getting proxy info for: %s'
+                               'Errors details: %s', url,
+                               response.text)
+        else:
+            if response.content:
+                p = PyQuery(response.content)
+                for anchor in p("a"):
+                    panchor = PyQuery(anchor)
+                    href = panchor.attr("href")
+                    if url_is_egg_file(href):
+                        # href points to a filename
+                        href = get_absolute_url(href, url)
+                        links.add('<a href="%s">%s</a>' % (href, panchor.text()))
+    except:
+        # something happened when looking for external links: 
+        #       timeout, HTML parser error, etc.
+        # we must not fail and only log the error
+        app.logger.exception('')
     return links
 
 
