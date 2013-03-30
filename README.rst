@@ -38,8 +38,3 @@ Advantajes
   a new release is required. This is version 0.9. Then the new package will
   be downloaded from PyPi, and the proxy will be updated
 
-
-Disadvantages
-=============
-
-* It doesn't seems to work with some packages.
