@@ -38,3 +38,8 @@ Advantajes
   a new release is required. This is version 0.9. Then the new package will
   be downloaded from PyPi, and the proxy will be updated
 
+
+Special Thanks
+==============
+
+Special thanks to `robin-jarry <https://github.com/robin-jarry>`_
