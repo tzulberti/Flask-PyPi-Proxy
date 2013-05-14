@@ -134,7 +134,14 @@ def simple_package(package_name):
                 if parsed.hostname == 'pypi.python.org':
                     # then it is hosted on the pypi server, so I change
                     # it to make it a relative url
-                    external_links.add(basename(parsed.path))
+                    pk_name = basename(parsed.path)
+                    if '#md5=' in parsed.path:
+                        pk_name, md5_data = pk_name.split('#md5=')
+                        pk_name = pk_name.replace('#md5=', '')
+                    else:
+                        md5_data = ''
+                    data = VersionData(pk_name, md5_data, None)
+                    package_versions.append(data)
 
                 else:
                     # the python package is hosted on another server
@@ -160,7 +167,6 @@ def simple_package(package_name):
             if existing_value:
                 package_versions.remove(existing_value[0])
 
-            print external_link
             data = VersionData(package_version, '', external_link)
             package_versions.append(data)
 
