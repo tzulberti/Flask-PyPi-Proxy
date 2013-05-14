@@ -16,7 +16,7 @@ setup(
         "requests",
         "python-magic",
         "pygments-json",
-        "pyquery"
+        "beautifulsoup4"
     ],
     packages=find_packages(),
     include_package_data=True,

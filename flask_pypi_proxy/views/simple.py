@@ -10,15 +10,16 @@ from collections import namedtuple
 from os import listdir
 from os.path import join, exists, basename
 
+from bs4 import BeautifulSoup
 from flask import abort, render_template
-from pyquery import PyQuery
 from requests import get
 
 from flask_pypi_proxy.app import app
-from flask_pypi_proxy.utils import get_package_path, get_base_path, is_private, url_is_egg_file
+from flask_pypi_proxy.utils import (get_package_path, get_base_path,
+                                    is_private, url_is_egg_file)
 
 
-VersionData = namedtuple('VersionData', ['name', 'md5'])
+VersionData = namedtuple('VersionData', ['name', 'md5', 'external_link'])
 
 
 @app.route('/simple/')
@@ -87,7 +88,7 @@ def simple_package(package_name):
 
             # remove .md5 extension
             name = filename[:-4]
-            data = VersionData(name, md5)
+            data = VersionData(name, md5, None)
             package_versions.append(data)
 
         return render_template('simple_package.html', **template_data)
@@ -103,47 +104,72 @@ def simple_package(package_name):
             abort(response.status_code)
 
         content = response.content
-        p = PyQuery(content)
         external_links = set()
-        for anchor in p("a"):
-            panchor = PyQuery(anchor)
-            href = panchor.attr('href')
-            # robin-jarry: modified the href to ../../packages/
-            # so that it works also for non-source packages (.egg, .exe and .msi)
+
+        # contains the list of pacges whih where checked because
+        # on the link they had the information of
+        visited_download_pages = set()
+        soup = BeautifulSoup(content)
+        package_versions = []
+
+        for panchor in soup.find_all('a'):
+
+            if panchor.get('rel') and panchor.get('rel')[0] == 'homepage':
+                # skip getting information on the project homepage
+                continue
+
+            href = panchor.get('href')
+            if href.startswith('../../packages/'):
+                # then the package is hosted on pypi.
+                pk_name = basename(href)
+                pk_name, md5_data = pk_name.split('#md5=')
+                pk_name = pk_name.replace('#md5=', '')
+                data = VersionData(pk_name, md5_data, None)
+                package_versions.append(data)
+                continue
+
             parsed = urlparse.urlparse(href)
-            
             if parsed.hostname:
-                # the link is to an external server.
+                # then the package had a full path to the file
                 if parsed.hostname == 'pypi.python.org':
-                    # we remove the hostname to make the URL relative
-                    panchor.attr('href', parsed.path)
+                    # then it is hosted on the pypi server, so I change
+                    # it to make it a relative url
+                    external_links.add(basename(parsed.path))
+
                 else:
-                    if panchor.attr('rel') == 'download':
+                    # the python package is hosted on another server
+                    # that isn't pypi. The packages that doesn't have
+                    # rel=download, then they are links to some pages
+                    if panchor.get('rel') and panchor.get('rel')[0] == 'download':
                         if url_is_egg_file(parsed.path):
-                            # href points to a filename
-                            external_links.add('<a href="%s">%s</a>' % (href, basename(parsed.path)))
+                            external_links.add(parsed.path)
                         else:
-                            # href points to an external page where we will find 
-                            # links to package files
-                            external_links.update(find_external_links(href))
-                    # what ever happens, we remove the link for now
-                    # we'll add the external_links after that we found after
-                    panchor.remove()                    
-            else:
-                # local link to pypi.python.org
-                if not href.startswith('../../packages/'):
-                    # ignore anything else than package links
-                    panchor.remove()
-            
+                            # href point to an external page where the links
+                            # to download the package will be found
+                            if href not in visited_download_pages:
+                                visited_download_pages.add(href)
+                                external_links.update(find_external_links(href))
+
         # after collecting all external links, we insert them in the html page
-        for link in external_links:
-            plink = PyQuery(link)
-            href = plink.attr('href')
-            plink.attr('href', convert_to_internal_url(href, package_name, basename(href)))
-            p('a').after(plink)
-        
-        content = p.outerHtml()
-        return content
+        final_external_links = []
+        for external_url in external_links:
+            package_version = basename(external_url)
+            existing_value = filter(lambda pv: pv.name == package_version,
+                                    package_versions)
+            external_link = urllib.urlencode({'remote': external_url})
+            if existing_value:
+                package_versions.remove(existing_value[0])
+
+            print external_link
+            data = VersionData(package_version, '', external_link)
+            package_versions.append(data)
+
+        template_data = dict(
+            source_letter=package_name[0],
+            package_name=package_name,
+            versions=package_versions
+        )
+        return render_template('simple_package.html', **template_data)
 
 
 def find_external_links(url):
@@ -158,16 +184,17 @@ def find_external_links(url):
                                response.text)
         else:
             if response.content:
-                p = PyQuery(response.content)
-                for anchor in p("a"):
-                    panchor = PyQuery(anchor)
-                    href = panchor.attr("href")
+                soup = BeautifulSoup(response.content)
+                for anchor in soup.find_all('a'):
+                    href = anchor.get("href")
                     if url_is_egg_file(href):
                         # href points to a filename
+                        if not url.endswith('/'):
+                            url += '/'
                         href = get_absolute_url(href, url)
-                        links.add('<a href="%s">%s</a>' % (href, panchor.text()))
+                        links.add(href)
     except:
-        # something happened when looking for external links: 
+        # something happened when looking for external links:
         #       timeout, HTML parser error, etc.
         # we must not fail and only log the error
         app.logger.exception('')
@@ -176,7 +203,7 @@ def find_external_links(url):
 
 def get_absolute_url(url, root_url):
     '''Make relative URLs absolute
-    
+
     >>> get_absolute_url('/src/blah.zip', 'https://awesome.org/')
     'https://awesome.org/src/blah.zip'
     >>> get_absolute_url('http://foo.bar.org/blah.zip', 'https://awesome.org/')
@@ -187,18 +214,3 @@ def get_absolute_url(url, root_url):
         return url
     else:
         return urlparse.urljoin(root_url, parsed.path)
-    
-
-def convert_to_internal_url(external_url, package_name, filename):
-    '''Convert an external URL (i.e. not on pypi.python.org) to something 
-    that can be sent to the clients behind our proxy.
-    
-    Example:
-    
-    >>> convert_to_internal_url('http://foo.bar.org/src/blah-1.2.zip', 'blah', 'blah-1.2.zip')
-    '../../packages/external/b/blah/blah-1.2.zip?remote=http%3A%2F%2Ffoo.bar.org%2Fsrc%2Fblah-1.2.zip'
-    '''
-    return '../../packages/external/%s/%s/%s?%s' % (package_name[0],
-                                                    package_name,
-                                                    filename,
-                                                    urllib.urlencode({'remote': external_url}))
