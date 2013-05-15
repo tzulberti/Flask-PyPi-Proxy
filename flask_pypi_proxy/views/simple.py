@@ -97,11 +97,21 @@ def simple_package(package_name):
                          'Using proxy.', package_name)
         url = app.config['PYPI_URL'] + 'simple/%s' % package_name
         response = get(url)
+
         if response.status_code != 200:
             app.logger.warning('Error while getting proxy info for: %s'
                                'Errors details: %s', package_name,
                                response.text)
             abort(response.status_code)
+
+        if response.history:
+            # in this case, the request was redirect, so I should also
+            # take into account this change. For example, this happens
+            # when requesting flask-bcrypt and on Pypi the request is
+            # redirected to Flask-Bcrypt
+            package_name = urlparse.urlparse(response.url).path
+            package_name = package_name.replace('/simple/', '')
+            package_name = package_name.replace('/', '')
 
         content = response.content
         external_links = set()
