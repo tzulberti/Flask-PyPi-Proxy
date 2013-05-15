@@ -69,7 +69,6 @@ def package(package_type, letter, package_name, package_file):
     else:
         # Downloads the egg from pypi and saves it locally, then
         # it will return it.
-
         package_path = get_package_path(package_name)
         app.logger.debug('Starting to download: %s using the url: %s',
                          package_file, url)
