@@ -54,6 +54,23 @@ like:
     password:bar
     repository:http://mypypiproxy/pypi/
 
+I you are using the configuration with Basic Auth, then the configuration
+file should look something like this:
+
+.. code-block::
+
+    [distutils]
+    index-servers =
+        miserver
+
+    [myserver]
+    username:basicauth_username
+    password:basciauth_password
+    repository:http://mypypiproxy/pypi/
+
+Basically, you should put on the username and password configuration values
+the username and password used for the Basic Auth.
+
 The username and password values aren't required by the Flask-Pypi-Proxy.
 They are used by distutils when uploading the package. If you don't have
 any authentification after this, then you can put any values. After that,
@@ -61,6 +78,15 @@ go to the **setup.py** of your project and run:
 
 .. code-block:: bash
 
-    python setup.py register -r myserver
     python setup.py sdist upload -r myserver
+
+**IMPORTANT:** the comand *register*, won't work if you are using Basic Auth
+For example, if you run
+
+.. code-block:: bash
+
+    python setup.py register
+
+and your server is configured using Basic Auth, then the register will return
+a 401 error. Simply upload the package without running the register
 

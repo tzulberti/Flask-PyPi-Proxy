@@ -108,7 +108,12 @@ authentification, so this shouldn't be used on production.
     >>> mkdir -p /mnt/eggs/
     >>> sudo chown www-data:www-data -R /mnt/eggs/
 
-    >>> cat /mnt/eggs/flask_pypi_proxy.wsgi
+Now, lets create the WSGI configuration file (in this example, I will
+create it on /mnt/eggs/flask_pypi_proxy.wsgi). The content of that file
+will be something like:
+
+.. code-block:: python
+
     import os
 
     os.environ['PYPI_PROXY_BASE_FOLDER_PATH'] = '/mnt/eggs/'
@@ -120,11 +125,112 @@ authentification, so this shouldn't be used on production.
 
     from flask_pypi_proxy.views import app as application
 
-    >>> cat /etc/apache2/sites-enabled/flask_pypi_proxy
+Finally, the Apache configuration (create a file on
+/etc/apache2/sites-enabled/flask_pypi_proxy), with the following content:
+
+::
+
     <VirtualHost *:80>
         WSGIDaemonProcess pypi_proxy threads=5
         WSGIScriptAlias / /mnt/eggs/flask_pypi_proxy.wsgi
     </VirtualHost>
+
+Restart the apache
+
+.. code-block:: bash
+
+    >>> sudo service apache2 restart
+
+
+More advance configuration
+==========================
+
+The following steps will show you how to install this service inside a
+virtualenv, also using Basic Auth to create some security for the eggs.
+
+.. code-block:: bash
+
+    >>> sudo apt-get install apache2 libapache2-mod-wsgi
+    >>> sudo apt-get install python-setuptools python-dev libxml2-dev libxslt-dev
+
+Now, create the user where the virtualenv will be installed
+
+    >>> sudo adduser pypi-proxy
+    Adding user `pypi-proxy' ...
+    Adding new group `pypi-proxy' (1001) ...
+    Adding new user `pypi-proxy' (1001) with group `pypi-proxy' ...
+    Creating home directory `/home/pypi-proxy' ...
+    Copying files from `/etc/skel' ...
+    Enter new UNIX password:
+    Retype new UNIX password:
+    >>> sudo easy_install virtualenv
+    >>> sudo su - pypi-proxy
+
+The following steps will be executed as **pypi-proxy**:
+
+.. code-block:: bash
+
+    mkdir ~/envs
+    virtualenv ~/envs/proxy
+    source ~/envs/proxy/bin/activate
+    pip instal Flask-Pypi-Proxy
+    mkdir /home/pypi-proxy/eggs/ # where the eggs will be
+    chgrp www-data /home/pypi-proxy/eggs/
+    chmod 775 /home/pypi-proxy/eggs/
+    mkdir /home/pypi-proxy/logs/ # the same but for the logs files
+    chgrp www-data /home/pypi-proxy/logs/
+    chmod 775 /home/pypi-proxy/logs/
+
+    htpasswd -c /home/pypi-proxy/htpasswd.file MY_USERNAME # creates the password file
+    sudo chown www-data:www-data /home/pypi-proxy/htpasswd.file
+    sudo chmod 620 /home/pypi-proxy/htpasswd.file
+
+Under the same user, lets create the WSGI file (for this example, I will
+put it on /home/pypi-proxy/pypi-proxy.wsgi). The content of this file is
+as follows:
+
+.. code-block:: python
+    import os
+
+    os.environ['PYPI_PROXY_BASE_FOLDER_PATH'] = '/home/pypi-proxy/eggs/'
+    os.environ['PYPI_PROXY_LOGGING_PATH'] = '/home/pypi-proxy/logs/proxy.log'
+
+    # if installed inside a virtualenv, then do this:
+    activate_this = '/home/pypi-proxy/envs/proxy/bin/activate_this.py'
+    execfile(activate_this, dict(__file__=activate_this))
+
+    from flask_pypi_proxy.views import app as application
+
+
+Now return to the normal user, and create the following Apache configuration
+(/etc/apache2/sites-enabled/flask_pypi_proxy).
+
+::
+
+    <VirtualHost *:80>
+        <Location />
+        AuthType Basic
+        AuthUserFile /home/pypi-proxy/htpasswd.file
+        AuthName "Private files"
+        Require valid-user
+        Order deny,allow
+        Allow from all
+
+
+        </Location>
+
+        WSGIDaemonProcess pypi_proxy threads=5
+        WSGIScriptAlias / /home/pypi-proxy/proxy.wsgi
+    </VirtualHost>
+
+Restart the apache
+
+.. code-block:: bash
+
+    sudo service apache2 restart
+
+
+
 
 
 
