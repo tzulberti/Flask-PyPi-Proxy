@@ -1,14 +1,15 @@
 <html>
-    <head>
-        <title>Links for {{ package_name }}</title>
-    </head>
-    <body>
-        <h1>Links for {{ package_name }}</h1>
-        {% for package_version in versions %}
-            {% if not package_version.external_link %}
-                <a href="/packages/source/{{ source_letter }}/{{ package_name }}/{{ package_version.name }}#md5={{ package_version.md5 }}">{{ package_version.name }}</a><br>
-            {% else %}
-                <a href="/packages/source/{{ source_letter }}/{{ package_name }}/{{ package_version.name }}?{{ package_version.external_link }}">{{ package_version.name }}</a><br>
-            {% endif %}
-        {% endfor %}
-    </body>
+<head>
+  <title>Links for {{ package_name }}</title>
+</head>
+<body>
+  <h1>Links for {{ package_name }}</h1>
+  {% for package_version in versions %}
+    {% if not package_version.external_link %}
+      <a href="/packages/source/{{ source_letter }}/{{ package_name }}/{{ package_version.name }}#md5={{ package_version.md5 }}">{{ package_version.name }}</a><br>
+    {% else %}
+      <a href="/packages/source/{{ source_letter }}/{{ package_name }}/{{ package_version.name }}?{{ package_version.external_link }}">{{ package_version.name }}</a><br>
+    {% endif %}
+  {% endfor %}
+</body>
+</html>

@@ -159,7 +159,7 @@ def simple_package(package_name):
                     # rel=download, then they are links to some pages
                     if panchor.get('rel') and panchor.get('rel')[0] == 'download':
                         if url_is_egg_file(parsed.path):
-                            external_links.add(parsed.path)
+                            external_links.add(href)
                         else:
                             # href point to an external page where the links
                             # to download the package will be found
