@@ -95,7 +95,7 @@ def simple_package(package_name):
     else:
         app.logger.debug('Didnt found package: %s in local repository. '
                          'Using proxy.', package_name)
-        url = app.config['PYPI_URL'] + 'simple/%s' % package_name
+        url = app.config['PYPI_URL'] + 'simple/%s/' % package_name
         response = get(url)
 
         if response.status_code != 200:
@@ -105,6 +105,7 @@ def simple_package(package_name):
             abort(response.status_code)
 
         if response.history:
+            app.logger.debug('The url was redirected')
             # in this case, the request was redirect, so I should also
             # take into account this change. For example, this happens
             # when requesting flask-bcrypt and on Pypi the request is
@@ -123,12 +124,12 @@ def simple_package(package_name):
         package_versions = []
 
         for panchor in soup.find_all('a'):
-
             if panchor.get('rel') and panchor.get('rel')[0] == 'homepage':
                 # skip getting information on the project homepage
                 continue
 
             href = panchor.get('href')
+            logger.debug('Found the link: %s', panchor.get('href'))
             if href.startswith('../../packages/'):
                 # then the package is hosted on pypi.
                 pk_name = basename(href)
@@ -199,6 +200,12 @@ def find_external_links(url):
                                'Errors details: %s', url,
                                response.text)
         else:
+            content_type = response.headers.get('content-type', '')
+            if content_type in ('application/x-gzip'):
+                # in this case the URL was a redirection to download
+                # a package. For example, sourceforge.
+                links.add(response.url)
+                return links
             if response.content:
                 soup = BeautifulSoup(response.content)
                 for anchor in soup.find_all('a'):
