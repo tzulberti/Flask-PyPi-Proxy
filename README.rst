@@ -42,4 +42,5 @@ Advantajes
 Special Thanks
 ==============
 
-Special thanks to `robin-jarry <https://github.com/robin-jarry>`_
+Special thanks to `robin-jarry <https://github.com/robin-jarry>`_ and to
+`jokull <https://github.com/jokull>`_
