@@ -129,7 +129,7 @@ def simple_package(package_name):
                 continue
 
             href = panchor.get('href')
-            logger.debug('Found the link: %s', panchor.get('href'))
+            app.logger.debug('Found the link: %s', panchor.get('href'))
             if href.startswith('../../packages/'):
                 # then the package is hosted on pypi.
                 pk_name = basename(href)
@@ -169,7 +169,6 @@ def simple_package(package_name):
                                 external_links.update(find_external_links(href))
 
         # after collecting all external links, we insert them in the html page
-        final_external_links = []
         for external_url in external_links:
             package_version = basename(external_url)
             existing_value = filter(lambda pv: pv.name == package_version,
