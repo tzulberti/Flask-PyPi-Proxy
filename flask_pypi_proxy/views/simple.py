@@ -177,6 +177,13 @@ def simple_package(package_name):
             if existing_value:
                 package_versions.remove(existing_value[0])
 
+            # check that the package version doens't override the one that
+            # already exists on pypi
+            existing_data = filter(lambda v: v.name == package_version,
+                                   package_versions)
+            if existing_data:
+                continue
+
             data = VersionData(package_version, '', external_link)
             package_versions.append(data)
 
@@ -232,7 +239,10 @@ def get_absolute_url(url, root_url):
     'http://foo.bar.org/blah.zip'
     '''
     parsed = urlparse.urlparse(url)
-    if parsed.scheme:
+    if url.startswith('//'):
+        # this are the URLS parsed from code.google.com
+        return 'http:' + url
+    elif parsed.scheme:
         return url
     else:
         return urlparse.urljoin(root_url, parsed.path)
