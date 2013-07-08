@@ -173,17 +173,13 @@ def simple_package(package_name):
             package_version = basename(external_url)
             existing_value = filter(lambda pv: pv.name == package_version,
                                     package_versions)
-            external_link = urllib.urlencode({'remote': external_url})
             if existing_value:
-                package_versions.remove(existing_value[0])
-
-            # check that the package version doens't override the one that
-            # already exists on pypi
-            existing_data = filter(lambda v: v.name == package_version,
-                                   package_versions)
-            if existing_data:
+                # if the package already exists on pypi, then
+                # use it's version instead of using the one that is
+                # hosted on a remote server
                 continue
 
+            external_link = urllib.urlencode({'remote': external_url})
             data = VersionData(package_version, '', external_link)
             package_versions.append(data)
 
