@@ -1,0 +1,8 @@
+Flask==0.9
+Jinja2==2.7
+MarkupSafe==0.17
+Werkzeug==0.8.3
+beautifulsoup4==4.2.0
+python-magic==0.4.3
+requests==1.2.1
+wsgiref==0.1.2

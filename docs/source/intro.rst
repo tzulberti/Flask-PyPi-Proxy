@@ -28,6 +28,3 @@ Disadvantajes
 * When downloading the package for the first time, it will take some extra time.
   This happens because the package will have to be downloaded from Pypi first,
   and then from the Flask-Pypi-Proxy
-
-* There are some packages that fails to install them. For example: py-bcrypt.
-  Basically, all the external packages that aren't hosted at pypi.python.org.

@@ -1,9 +1,10 @@
-from setuptools import setup, find_packages
+#!/bin/env python
 
+from setuptools import setup, find_packages
 
 setup(
     name='Flask-Pypi-Proxy',
-    version='0.0.3',
+    version='0.4.2',
     description='A Pypi proxy',
     long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',
@@ -14,8 +15,7 @@ setup(
         "Flask",
         "requests",
         "python-magic",
-        "pygments-json",
-        "pyquery"
+        "beautifulsoup4"
     ],
     packages=find_packages(),
     include_package_data=True,

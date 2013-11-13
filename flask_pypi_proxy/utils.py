@@ -39,3 +39,11 @@ def get_md5_for_content(package_content):
     '''
     res = md5(package_content)
     return res.hexdigest()
+
+
+def url_is_egg_file(url):
+    return url is not None and (   url.lower().endswith('.zip')
+                                or url.lower().endswith('.tar.gz')
+                                or url.lower().endswith('.egg')
+                                or url.lower().endswith('.exe')
+                                or url.lower().endswith('.msi'))

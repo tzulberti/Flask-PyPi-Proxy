@@ -39,7 +39,8 @@ Advantajes
   be downloaded from PyPi, and the proxy will be updated
 
 
-Disadvantages
-=============
+Special Thanks
+==============
 
-* It doesn't seems to work with some packages.
+Special thanks to `robin-jarry <https://github.com/robin-jarry>`_ and to
+`jokull <https://github.com/jokull>`_

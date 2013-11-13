@@ -18,26 +18,36 @@ from requests import get, head
 # from subprocess import Popen
 
 
-@app.route('/packages/source/<source_letter>/<package_name>/<package_file>',
+# robin-jarry: changed the "source" to a variable placeholder in the URL to
+# deal with non-source packages (usually stored in /packages/<python version>/...)
+@app.route('/packages/<package_type>/<letter>/<package_name>/<package_file>',
            methods=['GET', 'HEAD'])
-def package(source_letter, package_name, package_file):
+def package(package_type, letter, package_name, package_file):
     ''' Downloads the egg
 
-    :param str source_letter: the first char of the package name. For example:
+    :param str package_type: the nature of the package. For example:
+                              'source' or '2.7'
+    :param str letter: the first char of the package name. For example:
                               D
     :param str package_name: the name of the package. For example: Django
     :param str package_file: the name of the package and it's version. For
-                             example: Django==1.5.0
+                             example: Django-1.5.0.tar.gz
     '''
     egg_filename = join(get_base_path(), package_name, package_file)
+
+    remote = request.args.get('remote')
+    if remote:
+        # the requested link is not on pypi.python.org, we need to use the remote URL
+        url = remote
+    else:
+        url = app.config['PYPI_URL'] + 'packages/%s/%s/%s/%s' % (package_type,
+                                                                 letter,
+                                                                 package_name,
+                                                                 package_file)
     if request.method == 'HEAD':
         # in this case the content type of the file is what is
         # required
         if not exists(egg_filename):
-            url = app.config['PYPI_URL'] + 'packages/source/%s/%s/%s' % (
-                                        source_letter,
-                                        package_name,
-                                        package_file)
             pypi_response = head(url)
             return _respond(pypi_response.content, pypi_response.headers['content-type'])
 
@@ -59,15 +69,7 @@ def package(source_letter, package_name, package_file):
     else:
         # Downloads the egg from pypi and saves it locally, then
         # it will return it.
-
-        # TODO: there are some problem here with some packages. For
-        #       example: py-bcrypt
-
         package_path = get_package_path(package_name)
-        url = app.config['PYPI_URL'] + 'packages/source/%s/%s/%s' % (
-                                        source_letter,
-                                        package_name,
-                                        package_file)
         app.logger.debug('Starting to download: %s using the url: %s',
                          package_file, url)
         pypi_response = get(url)
