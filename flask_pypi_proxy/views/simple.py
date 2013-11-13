@@ -26,6 +26,8 @@ def simple():
     packages = []
     for filename in listdir(get_base_path()):
         packages.append(filename)
+
+    packages.sort()
     return render_template('simple.html', packages=packages)
 
 
