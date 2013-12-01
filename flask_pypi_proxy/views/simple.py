@@ -131,13 +131,19 @@ def simple_package(package_name):
                 continue
 
             href = panchor.get('href')
-            app.logger.debug('Found the link: %s', panchor.get('href'))
+            app.logger.debug('Found the link: %s', href)
             if href.startswith('../../packages/'):
                 # then the package is hosted on pypi.
                 pk_name = basename(href)
                 pk_name, md5_data = pk_name.split('#md5=')
                 pk_name = pk_name.replace('#md5=', '')
-                data = VersionData(pk_name, md5_data, None)
+
+                # remove md5 part to make the url shorter.
+                split_data = urlparse.urlsplit(href)
+                absolute_url = urlparse.urljoin(url, split_data.path)
+
+                external_link= urllib.urlencode({'remote': absolute_url})
+                data = VersionData(pk_name, md5_data, external_link)
                 package_versions.append(data)
                 continue
 
@@ -153,6 +159,9 @@ def simple_package(package_name):
                         pk_name = pk_name.replace('#md5=', '')
                     else:
                         md5_data = ''
+
+                    absolute_url = urlparse.urljoin(url, parsed.path)
+                    external_link= urllib.urlencode({'remote': absolute_url})
                     data = VersionData(pk_name, md5_data, None)
                     package_versions.append(data)
 
@@ -188,6 +197,8 @@ def simple_package(package_name):
 
             data = VersionData(package_version, '', external_link)
             package_versions.append(data)
+
+        package_versions.sort(key=lambda v: v.name)
 
         template_data = dict(
             source_letter=package_name[0],

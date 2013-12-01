@@ -15,11 +15,8 @@ from flask_pypi_proxy.utils import (get_base_path, get_package_path,
 from os import makedirs
 from os.path import join, exists
 from requests import get, head
-# from subprocess import Popen
 
 
-# robin-jarry: changed the "source" to a variable placeholder in the URL to
-# deal with non-source packages (usually stored in /packages/<python version>/...)
 @app.route('/packages/<package_type>/<letter>/<package_name>/<package_file>',
            methods=['GET', 'HEAD'])
 def package(package_type, letter, package_name, package_file):
@@ -34,16 +31,8 @@ def package(package_type, letter, package_name, package_file):
                              example: Django-1.5.0.tar.gz
     '''
     egg_filename = join(get_base_path(), package_name, package_file)
+    url = request.args.get('remote')
 
-    remote = request.args.get('remote')
-    if remote:
-        # the requested link is not on pypi.python.org, we need to use the remote URL
-        url = remote
-    else:
-        url = app.config['PYPI_URL'] + 'packages/%s/%s/%s/%s' % (package_type,
-                                                                 letter,
-                                                                 package_name,
-                                                                 package_file)
     if request.method == 'HEAD':
         # in this case the content type of the file is what is
         # required
