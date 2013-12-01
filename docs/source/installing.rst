@@ -155,6 +155,8 @@ virtualenv, also using Basic Auth to create some security for the eggs.
 
 Now, create the user where the virtualenv will be installed
 
+.. code-block:: bash
+
     >>> sudo adduser pypi-proxy
     Adding user `pypi-proxy' ...
     Adding new group `pypi-proxy' (1001) ...
@@ -190,6 +192,7 @@ put it on /home/pypi-proxy/pypi-proxy.wsgi). The content of this file is
 as follows:
 
 .. code-block:: python
+
     import os
 
     os.environ['PYPI_PROXY_BASE_FOLDER_PATH'] = '/home/pypi-proxy/eggs/'
