@@ -1,10 +1,11 @@
 #!/bin/env python
 
 from setuptools import setup, find_packages
+from flask_pypi_proxy import VERSION
 
 setup(
     name='Flask-Pypi-Proxy',
-    version='0.5.0',
+    version=VERSION,
     description='A Pypi proxy',
     long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',
