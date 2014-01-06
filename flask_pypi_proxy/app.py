@@ -8,11 +8,8 @@ import json
 import logging
 from flask import Flask
 
-app = Flask(__name__)
-
-
 def read_configuration(app, pypi_url='http://pypi.python.org',
-                        private_eggs=[]):
+                       private_eggs=[]):
     ''' Reads the configuration by using the system file or the configuration
     file.
 
@@ -95,5 +92,6 @@ def configure_logging(app):
                             level=getattr(logging, app.config['LOGGING_LEVEL']),
                             format='%(asctime)s [%(levelname)s] %(message)s')
 
+app = Flask(__name__)
 read_configuration(app)
 configure_logging(app)

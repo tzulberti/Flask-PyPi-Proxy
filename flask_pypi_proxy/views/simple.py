@@ -162,7 +162,7 @@ def simple_package(package_name):
 
                     absolute_url = urlparse.urljoin(url, parsed.path)
                     external_link= urllib.urlencode({'remote': absolute_url})
-                    data = VersionData(pk_name, md5_data, None)
+                    data = VersionData(pk_name, md5_data, external_link)
                     package_versions.append(data)
 
                 else:
