@@ -46,4 +46,5 @@ def url_is_egg_file(url):
                                 or url.lower().endswith('.tar.gz')
                                 or url.lower().endswith('.egg')
                                 or url.lower().endswith('.exe')
-                                or url.lower().endswith('.msi'))
+                                or url.lower().endswith('.msi')
+                                or url.lower().endswith('.whl'))
