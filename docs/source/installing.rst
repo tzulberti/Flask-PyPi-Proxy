@@ -2,7 +2,7 @@
 Deploying
 =========
 
-Flask-Pypi-Proxy is a normal Python Application, so it can be deployed
+Flask-Pypi-Proxy is a normal Python application, so it can be deployed
 as any other Flask application. For more information, you can check here:
 `http://flask.pocoo.org/docs/deploying/ <http://flask.pocoo.org/docs/deploying/>`_
 
@@ -11,34 +11,34 @@ Configuration
 =============
 
 The project uses the environment key **PYPI_PROXY_CONFIG_FILE** that references
-the path where the configuration file is. This file is a JSON file with the
+the path where the configuration file is. This file is in JSON format with the
 following keys:
 
 BASE_FOLDER_PATH
-    the base path where all the eggs will be stored. This is the base
-    path. For example: /home/pypi/eggs. For each egg name, a subfolder
-    will be created inside this folder. This value is required.
+    the base path where all the eggs will be stored. For example:
+    /home/pypi/eggs. For each egg name, a subfolder will be created
+    inside this folder. This value is required.
 
 PRIVATE_EGGS
-    a list with all the private eggs. On this eggs, Pypi won't be used
+    a list with all the private eggs. On this eggs, PyPI won't be used
     and it will only answer from where take the data. By default, there
-    are no private eggs, so everytime it will hit Pypi. This is usefull
+    are no private eggs, so everytime it will hit PyPI. This is useful
     for private proyects, or for eggs that were uploaded after compilation
-    (lxml, pil, etc...)
+    (lxml, PIL, etc...)
 
 PYPI_URL
     the URL where from where the eggs should be downloaded. By default it
-    uses: http://pypi.python.org. But I can be changed for any other. This might
-    be usefull, for example if you have a development/local proxy, that
+    uses: http://pypi.python.org but it can be changed for any other. This might
+    be useful, for example if you have a development/local proxy, that
     uses the production proxy.
 
 LOGGING_PATH
     the complete filepath of the logging for the aplication. This file must
-    include the path and the filename. This value is required
+    include the path and the filename. This value is required.
 
 LOGGING_LEVEL
     the string that represents the logging level that the application
-    should use. In this case, it should be an string: DEBUG, INFO, WARNING,
+    should use. In this case, it should be a string: DEBUG, INFO, WARNING,
     ERROR. By default, it uses DEBUG.
 
 SHOULD_USE_EXISTING
@@ -46,17 +46,17 @@ SHOULD_USE_EXISTING
     versions, it will use the ones that exists on the local repo instead
     of using the information found on PYPI_URL. If False, and the package
     isn't private, then it will use the PYPI_URL to get the file package.
-    Setting this value to True, migth do the things a litter faster, but
-    on the other hand, it might get intro trouble if trying to download
-    a version of a package that doesn't exists, but other version does exists.
+    Setting this value to True might do the things a little faster, but
+    on the other hand, it might get you into trouble if trying to download
+    a version of a package that doesn't exist, but other versions do exist.
     For example, you download version 1.4.2 of Django. If this value is
     set to True, then if you try to download version 1.5, it will return
-    that it doesn't exists.
+    that it doesn't exist.
 
 If you don't want to use a configuration file, then environment variables
-could be used. The environmental keys are the same as the one on the
+could be used. The variable names are the same as the keys in the
 configuration file, but they take the prefix: **PYPI_PROXY**. So the
-environment keys used are:
+variable names used are:
 
 * PYPI_PROXY_BASE_FOLDER_PATH
 * PYPI_PROXY_LOGGING_PATH
@@ -93,11 +93,11 @@ But a more common configuration file, will be:
     }
 
 
-Debian/Ubuntu Example Instalation
+Debian/Ubuntu Example Installation
 =================================
 
 This is a **VERY** simple/basic configuration. It doesn't provide any
-authentification, so this shouldn't be used on production.
+authentication, so this shouldn't be used on production.
 
 .. code-block:: bash
 
@@ -135,18 +135,18 @@ Finally, the Apache configuration (create a file on
         WSGIScriptAlias / /mnt/eggs/flask_pypi_proxy.wsgi
     </VirtualHost>
 
-Restart the apache
+Restart Apache
 
 .. code-block:: bash
 
     >>> sudo service apache2 restart
 
 
-More advance configuration
+More advanced configuration
 ==========================
 
 The following steps will show you how to install this service inside a
-virtualenv, also using Basic Auth to create some security for the eggs.
+virtualenv, also using HTTP basic auth to create some security for the eggs.
 
 .. code-block:: bash
 
@@ -154,6 +154,8 @@ virtualenv, also using Basic Auth to create some security for the eggs.
     >>> sudo apt-get install python-setuptools python-dev libxml2-dev libxslt-dev
 
 Now, create the user where the virtualenv will be installed
+
+.. code-block:: bash
 
     >>> sudo adduser pypi-proxy
     Adding user `pypi-proxy' ...
@@ -190,6 +192,7 @@ put it on /home/pypi-proxy/pypi-proxy.wsgi). The content of this file is
 as follows:
 
 .. code-block:: python
+
     import os
 
     os.environ['PYPI_PROXY_BASE_FOLDER_PATH'] = '/home/pypi-proxy/eggs/'
@@ -223,15 +226,8 @@ Now return to the normal user, and create the following Apache configuration
         WSGIScriptAlias / /home/pypi-proxy/proxy.wsgi
     </VirtualHost>
 
-Restart the apache
+Restart Apache
 
 .. code-block:: bash
 
     sudo service apache2 restart
-
-
-
-
-
-
-
