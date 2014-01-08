@@ -17,7 +17,7 @@ def read_configuration(app, pypi_url='http://pypi.python.org',
 
     :param str pypi_url: the base Pypi url from where get the packages.
 
-    :param str private_eggs: the list of the name of the proyects for which
+    :param str private_eggs: the list of the name of the projects for which
                              the **pypi_url** won't be used.
     '''
     filepath = os.environ.get('FLASK_PYPI_PROXY_CONFIG')

@@ -2,7 +2,7 @@
 Flask-Pypi-Proxy
 ================
 
-A pypi proxy done using flask. It will use PyPI, and then keep the downloaded
+A PyPI proxy done using Flask. It will use PyPI, and then keep the downloaded
 egg for future reference. After the package is downloaded from PyPI, it
 won't download it from PyPI again and instead use the local copy of the file.
 
@@ -25,7 +25,7 @@ Advantages
 ==========
 
 * A local PyPI mirror to download the eggs faster and doesn't depends on
-  Pypi or any other service.
+  PyPI or any other service.
 
 * Uploading your private python packages. This is useful if you work for a
   company that have eggs, but doesn't open source them :(
@@ -36,7 +36,7 @@ Advantages
 
 * It does get newer versions. Supose that you installed Flask (0.8.0), and
   a new release is required. This is version 0.9. Then the new package will
-  be downloaded from PyPI, and the proxy will be updated
+  be downloaded from PyPI, and the proxy will be updated.
 
 
 Special Thanks
