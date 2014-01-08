@@ -14,7 +14,7 @@ Advantages
   You configure one of this servers with Flask-Pypi-Proxy, and because of that
   all the servers download the required Python packages from an internal server.
 
-* You can upload your custom eggs. For example, you have your proyect which is
+* You can upload your custom eggs. For example, you have your project which is
   close sourced and because of that it can't be uploaded to PyPI. This
   will solve the problem becuase you will have an internal package system.
 

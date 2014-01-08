@@ -23,7 +23,7 @@ PRIVATE_EGGS
     a list with all the private eggs. On this eggs, PyPI won't be used
     and it will only answer from where take the data. By default, there
     are no private eggs, so everytime it will hit PyPI. This is useful
-    for private proyects, or for eggs that were uploaded after compilation
+    for private projects, or for eggs that were uploaded after compilation
     (lxml, PIL, etc...)
 
 PYPI_URL

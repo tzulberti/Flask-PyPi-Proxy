@@ -39,23 +39,23 @@ def simple_package(package_name):
     ''' Given a package name, returns all the versions for downloading
     that package.
 
-    If the package doesn't exists, then it will call PyPi (CheeseShop).
+    If the package doesn't exists, then it will call PyPI (CheeseShop).
     But if the package exists in the local path, then it will get all
     the versions for the local package.
 
     This will take into account if the egg is private or if it is a normal
-    egg that was uploaded to PyPi. This is important to take into account
-    the version of the eggs. For example, a proyect requires request==1.0.4
-    and another package uses request==1.0.3. Then the instalation of the
-    second package will fail because it wasn't downloaded an the **request**
+    egg that was uploaded to PyPI. This is important to take into account
+    the version of the eggs. For example, a project requires requests==1.0.4
+    and another package uses requests==1.0.3. Then the instalation of the
+    second package will fail because it wasn't downloaded and the **requests**
     folder only has the 1.0.4 version.
 
     To solve this problem, the system uses 2 different kinds of eggs:
 
     * private eggs: are the eggs that you uploaded to the private repo.
-    * normal eggs: are the eggs that are downloaded from pypi.
+    * normal eggs: are the eggs that are downloaded from PyPI.
 
-    So the normal eggs will always get the simple page from the pypi repo,
+    So the normal eggs will always get the simple page from the PyPI repo,
     will the private eggs will always be read from the filesystem.
 
 
@@ -133,7 +133,7 @@ def simple_package(package_name):
             href = panchor.get('href')
             app.logger.debug('Found the link: %s', href)
             if href.startswith('../../packages/'):
-                # then the package is hosted on pypi.
+                # then the package is hosted on PyPI.
                 pk_name = basename(href)
                 pk_name, md5_data = pk_name.split('#md5=')
                 pk_name = pk_name.replace('#md5=', '')
@@ -151,7 +151,7 @@ def simple_package(package_name):
             if parsed.hostname:
                 # then the package had a full path to the file
                 if parsed.hostname == 'pypi.python.org':
-                    # then it is hosted on the pypi server, so I change
+                    # then it is hosted on the PyPI server, so I change
                     # it to make it a relative url
                     pk_name = basename(parsed.path)
                     if '#md5=' in parsed.path:
@@ -167,13 +167,13 @@ def simple_package(package_name):
 
                 else:
                     # the python package is hosted on another server
-                    # that isn't pypi. The packages that doesn't have
-                    # rel=download, then they are links to some pages
+                    # that isn't PyPI. The packages that don't have
+                    # rel=download are links to some pages
                     if panchor.get('rel') and panchor.get('rel')[0] == 'download':
                         if url_is_egg_file(parsed.path):
                             external_links.add(href)
                         else:
-                            # href point to an external page where the links
+                            # href points to an external page where the links
                             # to download the package will be found
                             if href not in visited_download_pages:
                                 visited_download_pages.add(href)
@@ -185,8 +185,8 @@ def simple_package(package_name):
             existing_value = filter(lambda pv: pv.name == package_version,
                                     package_versions)
             if existing_value:
-                # if the package already exists on pypi, then
-                # use it's version instead of using the one that is
+                # if the package already exists on PyPI, then
+                # use its version instead of using the one that is
                 # hosted on a remote server
                 continue
 
