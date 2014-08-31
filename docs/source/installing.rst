@@ -10,7 +10,7 @@ as any other Flask application. For more information, you can check here:
 Configuration
 =============
 
-The project uses the environment key **PYPI_PROXY_CONFIG_FILE** that references
+The project uses the environment key **FLASK_PYPI_PROXY_CONFIG** that references
 the path where the configuration file is. This file is in JSON format with the
 following keys:
 
@@ -20,20 +20,20 @@ BASE_FOLDER_PATH
     inside this folder. This value is required.
 
 PRIVATE_EGGS
-    a list with all the private eggs. On this eggs, PyPI won't be used
-    and it will only answer from where take the data. By default, there
+    a list with all the private eggs. For these eggs, PyPI won't be used
+    and it will only answer with local data. By default, there
     are no private eggs, so everytime it will hit PyPI. This is useful
     for private projects, or for eggs that were uploaded after compilation
     (lxml, PIL, etc...)
 
 PYPI_URL
     the URL where from where the eggs should be downloaded. By default it
-    uses: http://pypi.python.org but it can be changed for any other. This might
+    uses: http://pypi.python.org but it can be changed to any other. This might
     be useful, for example if you have a development/local proxy, that
     uses the production proxy.
 
 LOGGING_PATH
-    the complete filepath of the logging for the aplication. This file must
+    the complete filepath of the logging for the application. This file must
     include the path and the filename. This value is required.
 
 LOGGING_LEVEL
@@ -93,8 +93,8 @@ But a more common configuration file, will be:
     }
 
 
-Debian/Ubuntu Example Installation
-=================================
+Debian/Ubuntu example installation
+==================================
 
 This is a **VERY** simple/basic configuration. It doesn't provide any
 authentication, so this shouldn't be used on production.
@@ -125,8 +125,8 @@ will be something like:
 
     from flask_pypi_proxy.views import app as application
 
-Finally, the Apache configuration (create a file on
-/etc/apache2/sites-enabled/flask_pypi_proxy), with the following content:
+Finally, the Apache configuration. Create a file at
+/etc/apache2/sites-enabled/flask_pypi_proxy with the following content:
 
 ::
 
@@ -143,7 +143,7 @@ Restart Apache
 
 
 More advanced configuration
-==========================
+===========================
 
 The following steps will show you how to install this service inside a
 virtualenv, also using HTTP basic auth to create some security for the eggs.
@@ -153,7 +153,7 @@ virtualenv, also using HTTP basic auth to create some security for the eggs.
     >>> sudo apt-get install apache2 libapache2-mod-wsgi
     >>> sudo apt-get install python-setuptools python-dev libxml2-dev libxslt-dev
 
-Now, create the user where the virtualenv will be installed
+Now, create the user where the virtualenv will be installed:
 
 .. code-block:: bash
 
@@ -206,7 +206,7 @@ as follows:
 
 
 Now return to the normal user, and create the following Apache configuration
-(/etc/apache2/sites-enabled/flask_pypi_proxy).
+(/etc/apache2/sites-enabled/flask_pypi_proxy):
 
 ::
 
@@ -218,8 +218,6 @@ Now return to the normal user, and create the following Apache configuration
         Require valid-user
         Order deny,allow
         Allow from all
-
-
         </Location>
 
         WSGIDaemonProcess pypi_proxy threads=5
