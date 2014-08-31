@@ -6,7 +6,7 @@ from flask_pypi_proxy import VERSION
 setup(
     name='Flask-Pypi-Proxy',
     version=VERSION,
-    description='A Pypi proxy',
+    description='A PyPI proxy',
     long_description=open('README.rst').read(-1),
     author='Tomas Zulberti',
     author_email='tzulberti@gmail.com',

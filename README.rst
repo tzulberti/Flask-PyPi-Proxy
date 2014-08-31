@@ -18,7 +18,7 @@ To use it after the right configuration, run:
 
 Documentation can be found here:
 `https://flask-pypi-proxy.readthedocs.org/en/latest/index.html
-<https://flask-pypi-proxy.readthedocs.org/en/latest/index.html>`_
+<https://flask-pypi-proxy.readthedocs.org/en/latest/index.html>`_.
 
 
 Advantages
@@ -42,6 +42,6 @@ Advantages
 Special Thanks
 ==============
 
-Special thanks to `robin-jarry <https://github.com/robin-jarry>`_, 
-`jokull <https://github.com/jokull>`_ and to 
-`<michaelmior https://github.com/michaelmior>`
+Special thanks to `robin-jarry <https://github.com/robin-jarry>`_,
+`jokull <https://github.com/jokull>`_ and to
+`michaelmior <https://github.com/michaelmior>`_.
