@@ -43,5 +43,6 @@ Special Thanks
 ==============
 
 Special thanks to `robin-jarry <https://github.com/robin-jarry>`_,
-`jokull <https://github.com/jokull>`_ and to
-`michaelmior <https://github.com/michaelmior>`_.
+`jokull <https://github.com/jokull>`_,
+`michaelmior <https://github.com/michaelmior>`_ and to
+`Tenzer <https://github.com/Tenzer>`_.
