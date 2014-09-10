@@ -8,7 +8,7 @@ Downloading packages
 
 To download a package from the proxy, there are two choices:
 
-* To specify the server where the server is installed when runing **pip** or
+* Specify the server where the server is installed when runing **pip** or
   **easy_install**.
 
   .. code-block:: bash
@@ -16,21 +16,21 @@ To download a package from the proxy, there are two choices:
       pip install -i http://mypypiproxy/simple/ Flask
       easy_install -i http://mypypiproxy/simple/ Flask
 
-* To use the index url in a configuration file. For easy_install, it
+* Use the index url in a configuration file. For easy_install, it
   should be on **~/.pydistutils.cfg** (on Linux), and the file should have
   the following format::
 
     [easy_install]
     index_url = http://mypypiproxy/simple/
 
-  For **pip**, the configuration file is **.pip/pip.conf**, and the file
+  For **pip**, the configuration file is **~/.pip/pip.conf**, and the file
   should have the following format::
 
     [global]
     index-url = http://mypypiproxy/simple/
 
 Also, you should increment the timeout option for **pip** or **easy_install**.
-For pip, the **.pip/pip.conf** configuration file should be something like::
+For pip, the **~/.pip/pip.conf** configuration file should be something like:
 
     [global]
     index-url = http://mypypiproxy/simple/
@@ -70,7 +70,7 @@ file should look something like this:
 
 Basically, you should put in the username and password used for the basic auth.
 
-The username and password values aren't required by the Flask-Pypi-Proxy.
+The username and password values aren't required by Flask-Pypi-Proxy.
 They are used by distutils when uploading the package. If you don't have
 any authentication after this, then you can put any values. After that,
 go to the **setup.py** of your project and run:
@@ -79,7 +79,7 @@ go to the **setup.py** of your project and run:
 
     python setup.py sdist upload -r myserver
 
-**IMPORTANT:** the comand *register*, won't work if you are using basic auth
+**IMPORTANT:** The command *register*, won't work if you are using basic auth.
 For example, if you run
 
 .. code-block:: bash
